@@ -1,4 +1,4 @@
-(function() {
+(function(W) {
 
 'use strict';
 
@@ -9,7 +9,7 @@
  * ------------------------------------------------------------
  */
 
-var transit = (function() {
+var transit = (function(W) {
 
   var transit_storage = {};
 
@@ -65,6 +65,83 @@ var transit = (function() {
   }
 
 
+  /**
+   * Encode string to base64
+   * see: http://phpjs.org/functions/base64_encode/
+   * ------------------------------------------------------------
+   * @name base64Encode
+   * @param {String} string for encode
+   * @return {String} string encode with base64
+   */
+  
+  function base64Encode(data) {
+    var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
+      ac = 0,
+      enc = '',
+      tmp_arr = [];
+
+    if (!data) {
+      return data;
+    }
+
+    do { // pack three octets into four hexets
+      o1 = data.charCodeAt(i++);
+      o2 = data.charCodeAt(i++);
+      o3 = data.charCodeAt(i++);
+
+      bits = o1 << 16 | o2 << 8 | o3;
+
+      h1 = bits >> 18 & 0x3f;
+      h2 = bits >> 12 & 0x3f;
+      h3 = bits >> 6 & 0x3f;
+      h4 = bits & 0x3f;
+
+      // use hexets to index into b64, and append result to encoded string
+      tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
+    } while (i < data.length);
+
+    enc = tmp_arr.join('');
+
+    var r = data.length % 3;
+
+    return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
+  }
+
+
+  /**
+   * Generate ID from url for track load script
+   * ------------------------------------------------------------
+   * @name generateLoadID
+   * @return {String} load ID
+   */
+  
+  function generateLoadID(url) {
+    return 'transit-load-' + base64Encode(url);
+  }
+
+
+  /**
+   * Clean up duplication script tag before load
+   * ------------------------------------------------------------
+   * @name cleanUpScript
+   * @param {String} script id for remove
+   */
+  
+  function cleanUpScript(id) {
+    var target = document.getElementById(id);
+    if (target) {
+      target.parentNode.removeChild(target);
+    }
+  }
+
+
+  /**
+   * ------------------------------------------------------------
+   * Avaliable method
+   * ------------------------------------------------------------
+   */
+  
   return {
 
     /**
@@ -89,11 +166,14 @@ var transit = (function() {
      * @name transit.exports
      * @param {String} context name
      * @param {Function} export function
+     * @param {Boolean} update export source or not (default: true)
      */
 
-    exports: function(name, func) {
+    exports: function(name, func, update) {
+      if (update == null) { update = true; }
+
       // check exports function exist or not
-      if (transit_storage[name]) {
+      if (transit_storage[name] && !update) {
         throw new Error('Exports name `' + name + '` is already exist.');
       }
 
@@ -157,35 +237,44 @@ var transit = (function() {
      * @param {String} context for append script [head|current|bottom] (default is current script file)
      */
     
-    load: function(url, callback, append_to) {
-      if (append_to == null) { append_to = 'current'; }
+    load: function(url, callback, context) {
+      if (context == null) { context = 'current'; }
 
-      var script = document.createElement('script');
+      var script = document.createElement('script'),
+          id = generateLoadID(url);
+
+      // remove duplicate script
+      cleanUpScript(id);
+
+      script.id = id;
       script.src = url;
+
 
       // Then bind the event to the callback function.
       // There are several events for cross browser compatibility.
       script.onreadystatechange = (callback || noop);
       script.onload = (callback || noop);
 
-      if (append_to === 'head') {
+      if (context === 'head') {
         document.getElementsByTagName('head')[0].appendChild(script);
       }
-      else if (append_to === 'current') {
+      else if (context === 'current') {
         var currentScript = document.getElementsByTagName('script');
         currentScript = currentScript[currentScript.length - 1];
         currentScript.parentNode.insertBefore(script, currentScript);
       }
-      else if (append_to === 'bottom') {
+      else if (context === 'bottom') {
         document.getElementsByTagName('body')[0].appendChild(script);
       }
 
+      // clean up load script
+      // script.parentNode.removeChild(script);
     }
 
 
   };
 
-})();
+})(window);
 
 
 /**
@@ -194,13 +283,12 @@ var transit = (function() {
  * ------------------------------------------------------------
  */
 
-if (!window.exports && !window.require && !window.requireClone) {
-  window.exports = transit.exports;
-  window.require = transit.require;
-  window.requireClone = transit.requireClone;
+if (!W.exports && !W.require && !W.requireClone) {
+  W.exports = transit.exports;
+  W.require = transit.require;
+  W.requireClone = transit.requireClone;
 }
 
-window.transit = transit;
+W.transit = transit;
 
-
-}).call(this);
+})(window);
