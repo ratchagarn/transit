@@ -2,9 +2,30 @@
 
 'use strict';
 
-var a = new ( require('a') )();
+var A = require('A');
 
-console.log( a.getName() );
+
+var B = (function() {
+
+  var name = 'Function B';
+
+  return {
+
+    getName: function() {
+      return name;
+    }
+
+  }
+
+})();
+
+
+console.log( A.getName() );
+
+
+A.add = function(a, b) {
+  return a + b;
+}
 
 
 }).call(this);

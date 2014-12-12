@@ -2,20 +2,29 @@
 
 'use strict';
 
-function a() {
-  this.name = 'Function A';
-}
 
-a.prototype = {
+var A = (function() {
 
-  getName: function() {
-    return this.name;
+  var name = 'Function A';
+
+  return {
+
+    getName: function() {
+      return name;
+    }
+
   }
 
-};
+})();
 
 
-exports('a', a);
+transit.load('for-load.js', function() {
+  var LoadFile = require('LoadFile');
+  console.log(LoadFile);
+});
+
+
+exports('A', A);
 
 
 }).call(this);
