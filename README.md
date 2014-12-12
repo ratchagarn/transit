@@ -1,7 +1,7 @@
 transit
 =======
 
-Exports javascript exist to another file
+Export javascript code available to the javascript file.
 
 
 ## VERSION 0.1.0
