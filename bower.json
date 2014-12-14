@@ -1,6 +1,7 @@
 {
   "name": "transit",
   "version": "0.1.4",
+  "main": "dist/transit.js",
   "homepage": "https://github.com/ratchagarn/transit",
   "authors": [
     "Ratchagarn <ratchagarn@gmail.com>"
