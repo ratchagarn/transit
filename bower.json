@@ -1,0 +1,21 @@
+{
+  "name": "transit",
+  "version": "0.1.4",
+  "homepage": "https://github.com/ratchagarn/transit",
+  "authors": [
+    "Ratchagarn <ratchagarn@gmail.com>"
+  ],
+  "description": "Export javascript code available to the javascript file.",
+  "keywords": [
+    "exports",
+    "require"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
