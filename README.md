@@ -4,10 +4,15 @@ transit
 Export javascript code available to the javascript file.
 
 
-## VERSION 0.1.3
+## VERSION 0.1.4
 
 
 ## Change log
+
+
+### 0.1.4
+- Change way how to remove duplication load script tag.
+
 
 ### 0.1.3
 - Improvement method `exports`

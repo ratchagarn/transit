@@ -1,6 +1,8 @@
-(function(W) {
+(function() {
 
 'use strict';
+
+var global = this;
 
 
 /**
@@ -9,7 +11,7 @@
  * ------------------------------------------------------------
  */
 
-var transit = (function(W) {
+var transit = (function() {
 
   var transit_storage = {},
       export_action_name = ['normal', 'update', 'load'];
@@ -29,6 +31,24 @@ var transit = (function(W) {
    */
   
   function noop() {}
+
+
+  /**
+   * Check object is Array or not
+   * ------------------------------------------------------------
+   * @name isArray
+   * @param {Object} object for check
+   * @return {Boolean} result Array or not
+   */
+  
+  function isArray(obj) {
+    if (obj instanceof Array) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
   
 
   /**
@@ -61,64 +81,8 @@ var transit = (function(W) {
 
   function cloneFunction(func) {
     function F() {}
-    F.apply(func);
+    F.call(func);
     return F;
-  }
-
-
-  /**
-   * Encode string to base64
-   * see: http://phpjs.org/functions/base64_encode/
-   * ------------------------------------------------------------
-   * @name base64Encode
-   * @param {String} string for encode
-   * @return {String} string encode with base64
-   */
-  
-  function base64Encode(data) {
-    var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
-      ac = 0,
-      enc = '',
-      tmp_arr = [];
-
-    if (!data) {
-      return data;
-    }
-
-    do { // pack three octets into four hexets
-      o1 = data.charCodeAt(i++);
-      o2 = data.charCodeAt(i++);
-      o3 = data.charCodeAt(i++);
-
-      bits = o1 << 16 | o2 << 8 | o3;
-
-      h1 = bits >> 18 & 0x3f;
-      h2 = bits >> 12 & 0x3f;
-      h3 = bits >> 6 & 0x3f;
-      h4 = bits & 0x3f;
-
-      // use hexets to index into b64, and append result to encoded string
-      tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
-    } while (i < data.length);
-
-    enc = tmp_arr.join('');
-
-    var r = data.length % 3;
-
-    return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
-  }
-
-
-  /**
-   * Generate ID from url for track load script
-   * ------------------------------------------------------------
-   * @name generateLoadID
-   * @return {String} load ID
-   */
-  
-  function generateLoadID(url) {
-    return 'transit-load-' + base64Encode(url);
   }
 
 
@@ -126,11 +90,11 @@ var transit = (function(W) {
    * Clean up duplication script tag before load
    * ------------------------------------------------------------
    * @name cleanUpScript
-   * @param {String} script id for remove
+   * @param {String} script url for remove
    */
   
-  function cleanUpScript(id) {
-    var target = document.getElementById(id);
+  function cleanUpScript(url) {
+    var target = document.querySelector('script[src="' + url + '"]');
     if (target) {
       target.parentNode.removeChild(target);
     }
@@ -230,7 +194,7 @@ var transit = (function(W) {
           resource = cloneFunction(resource);
         }
         // clone array
-        else if (resource instanceof Array) {
+        else if (isArray(resource)) {
           resource = resource.slice(0);
         }
         // clone object
@@ -257,15 +221,11 @@ var transit = (function(W) {
     load: function(url, callback, context) {
       if (context == null) { context = 'current'; }
 
-      var script = document.createElement('script'),
-          id = generateLoadID(url);
-
       // remove duplicate script
-      cleanUpScript(id);
+      cleanUpScript(url);
 
-      script.id = id;
+      var script = document.createElement('script');
       script.src = url;
-
 
       // Then bind the event to the callback function.
       // There are several events for cross browser compatibility.
@@ -292,7 +252,7 @@ var transit = (function(W) {
 
   };
 
-})(window);
+})();
 
 
 /**
@@ -301,12 +261,12 @@ var transit = (function(W) {
  * ------------------------------------------------------------
  */
 
-if (!W.exports && !W.require && !W.requireClone) {
-  W.exports = transit.exports;
-  W.require = transit.require;
-  W.requireClone = transit.requireClone;
+if (!global.exports && !global.require && !global.requireClone) {
+  global.exports = transit.exports;
+  global.require = transit.require;
+  global.requireClone = transit.requireClone;
 }
 
-W.transit = transit;
+global.transit = transit;
 
-})(window);
+}).call(this);
