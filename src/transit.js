@@ -11,7 +11,8 @@
 
 var transit = (function(W) {
 
-  var transit_storage = {};
+  var transit_storage = {},
+      export_action_name = ['normal', 'update', 'load'];
 
 
   /**
@@ -166,18 +167,31 @@ var transit = (function(W) {
      * @name transit.exports
      * @param {String} context name
      * @param {Function} export function
-     * @param {Boolean} update export source or not (default: true)
+     * @param {String} action string for test export what to do
      */
 
-    exports: function(name, func, update) {
-      if (update == null) { update = true; }
-
-      // check exports function exist or not
-      if (transit_storage[name] && !update) {
-        throw new Error('Exports name `' + name + '` is already exist.');
+    exports: function(name, func, action) {
+      if (action == null) { action = 'normal'; }
+      if (export_action_name.indexOf(action) === -1) {
+        throw new Error('Export action name `' + action + '` doesn\'t exist. (' + export_action_name + ')'); 
       }
 
-      transit_storage[name] = func;
+      // check exports function exist or not
+      if (transit_storage[name]) {
+        if (action !== 'update' && action !== 'load') {
+          throw new Error('Export name `' + name + '` is already exist.'); 
+        }
+
+        // update export source
+        if (action === 'update') {
+          transit_storage[name] = func;
+        }
+
+      }
+      else {
+        transit_storage[name] = func;
+      }
+
     },
 
 
@@ -190,6 +204,9 @@ var transit = (function(W) {
      */
 
     require: function(name) {
+      if (!transit_storage[name]) {
+        throw new Error('Export name `' + name + '  doesn\'t exist.');
+      }
       return transit_storage[name];
     },
 
@@ -254,6 +271,7 @@ var transit = (function(W) {
       // There are several events for cross browser compatibility.
       script.onreadystatechange = (callback || noop);
       script.onload = (callback || noop);
+
 
       if (context === 'head') {
         document.getElementsByTagName('head')[0].appendChild(script);

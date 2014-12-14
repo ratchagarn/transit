@@ -17,7 +17,7 @@ var LoadFile = (function() {
 })();
 
 
-exports('LoadFile', LoadFile);
+exports('LoadFile', LoadFile, 'load');
 
 
 }).call(this);
