@@ -1,5 +1,5 @@
 /*!
- * Transit version 0.1.3
+ * Transit version 0.1.4
  * Copyright 2014-Preset
  * Author: Ratchagarn Naewbuntad
  * Licensed under MIT
