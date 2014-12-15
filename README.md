@@ -34,6 +34,8 @@ Export javascript code available to the javascript file.
 
 ### Example
 
+### Export/Require
+
 ```html
 <!-- HTML -->
 <script src="a.js"></script>
@@ -63,6 +65,13 @@ export('A', A);
  */
 var A = require('A');
 A.functionA(); // Output is `Function A`
+```
+
+### Load
+```javascript
+transit.load('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js', function() {
+  $('body').css('background-color', 'red');
+});
 ```
 
 See folder `demo` for more example :)
