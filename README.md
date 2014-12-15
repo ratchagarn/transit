@@ -34,4 +34,26 @@ Export javascript code available to the javascript file.
 
 ### Example
 
-- Clone this project to your computer and see folder `demo` :)
+```html
+<script src="a.js"></script>
+<script src="b.js"></script>
+```
+
+```javascript
+// a.js
+var A = (function() {
+  return {
+    functionA: function() {
+      console.log('Function A');
+    }
+  }
+})();
+
+export('A', A);
+
+// b.js
+var A = require('A');
+A.functionA(); // Output is `Function A`
+```
+
+Folder `demo` for more example :)
