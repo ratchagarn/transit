@@ -35,12 +35,18 @@ Export javascript code available to the javascript file.
 ### Example
 
 ```html
+<!-- HTML -->
 <script src="a.js"></script>
 <script src="b.js"></script>
 ```
 
 ```javascript
-// a.js
+// JavaScript
+
+/**
+ * a.js
+ * ------------------------------------------------------------
+ */
 var A = (function() {
   return {
     functionA: function() {
@@ -51,9 +57,12 @@ var A = (function() {
 
 export('A', A);
 
-// b.js
+/**
+ * b.js
+ * ------------------------------------------------------------
+ */
 var A = require('A');
 A.functionA(); // Output is `Function A`
 ```
 
-Folder `demo` for more example :)
+See folder `demo` for more example :)
