@@ -169,7 +169,7 @@ var transit = (function() {
 
     require: function(name) {
       if (!transit_storage[name]) {
-        throw new Error('Export name `' + name + '  doesn\'t exist.');
+        console.warn('Exports name `' + name + '` doesn\'t exist.');
       }
       return transit_storage[name];
     },

@@ -4,10 +4,14 @@ transit
 Export javascript code available to the javascript file.
 
 
-## VERSION 0.1.4
+## VERSION 0.1.5
 
 
 ## Change log
+
+
+### 0.1.5
+- Using warning instead of throw Error, When not found exports name.
 
 
 ### 0.1.4

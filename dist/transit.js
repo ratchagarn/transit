@@ -1,5 +1,5 @@
 /*!
- * Transit version 0.1.4
+ * Transit version 0.1.5
  * Copyright 2014-Preset
  * Author: Ratchagarn Naewbuntad
  * Licensed under MIT
@@ -175,7 +175,7 @@ var transit = (function() {
 
     require: function(name) {
       if (!transit_storage[name]) {
-        throw new Error('Export name `' + name + '  doesn\'t exist.');
+        console.warn('Exports name `' + name + '` doesn\'t exist.');
       }
       return transit_storage[name];
     },
