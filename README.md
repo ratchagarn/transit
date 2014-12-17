@@ -61,7 +61,7 @@ var A = (function() {
   }
 })();
 
-transit.export('A', A); // or export('A', A);
+transit.exports('A', A); // or exports('A', A);
 
 /**
  * b.js
