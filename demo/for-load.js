@@ -17,7 +17,7 @@ var LoadFile = (function() {
 })();
 
 
-exports('LoadFile', LoadFile, 'load');
+transit.exports('LoadFile', LoadFile, 'load');
 
 
 }).call(this);

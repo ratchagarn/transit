@@ -19,14 +19,14 @@ var A = (function() {
 
 
 transit.load('for-load.js', function() {
-  var LoadFile = require('LoadFile');
+  var LoadFile = transit.require('LoadFile');
   D.getElementById('greeting').appendChild(
     D.createTextNode( LoadFile.greeting() )
   );
 });
 
 
-exports('A', A);
+transit.exports('A', A);
 
 
 }).call(this, document);

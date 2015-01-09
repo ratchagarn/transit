@@ -65,13 +65,13 @@ var A = (function() {
   }
 })();
 
-transit.exports('A', A); // or exports('A', A);
+transit.exports('A', A);
 
 /**
  * b.js
  * ------------------------------------------------------------
  */
-var A = transit.require('A'); // or require('A');
+var A = transit.require('A');
 A.functionA(); // Output is `Function A`
 ```
 

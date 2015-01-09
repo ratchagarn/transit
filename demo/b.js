@@ -2,7 +2,7 @@
 
 'use strict';
 
-var A = require('A');
+var A = transit.require('A');
 
 
 var B = (function() {
