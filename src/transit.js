@@ -255,18 +255,6 @@ var transit = (function() {
 })();
 
 
-/**
- * ------------------------------------------------------------
- * Make alias
- * ------------------------------------------------------------
- */
-
-if (!global.exports && !global.require && !global.requireClone) {
-  global.exports = transit.exports;
-  global.require = transit.require;
-  global.requireClone = transit.requireClone;
-}
-
 global.transit = transit;
 
 }).call(this);
