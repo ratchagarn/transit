@@ -1,6 +1,6 @@
 {
   "name": "transit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Export javascript code available to the javascript file.",
   "main": "Gruntfile.js",
   "repository": {

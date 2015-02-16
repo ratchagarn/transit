@@ -4,10 +4,14 @@ transit
 Export javascript code available to the javascript file.
 
 
-## VERSION 0.2.0
+## VERSION 0.2.1
 
 
 ## Change log
+
+
+### 0.2.1
+- Fixed wrong wording.
 
 
 ### 0.2.0
