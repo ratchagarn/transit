@@ -109,25 +109,25 @@ var transit = (function() {
 
   /**
    * ------------------------------------------------------------
-   * Avaliable method
+   * available method
    * ------------------------------------------------------------
    */
   
   return {
 
     /**
-     * View exports name is avaliable right now
+     * View exports name is available right now
      * ------------------------------------------------------------
      * @name list
-     * @return {Array} exports name is avaliable list
+     * @return {Array} exports name is available list
      */
 
     list: function() {
-      var exports_avaliable = [];
+      var exports_available = [];
       for (var _name in transit_storage) {
-        exports_avaliable.push(_name);
+        exports_available.push(_name);
       }
-      return exports_avaliable;
+      return exports_available;
     },
 
 
