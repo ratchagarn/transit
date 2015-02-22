@@ -4,10 +4,16 @@ transit
 Export javascript code available to the javascript file.
 
 
-## VERSION 0.2.1
+## VERSION 0.3.0
 
 
 ## Change log
+
+### 0.3.0
+- Remove exports action.
+- Remove exports load feature for load and require local file.
+- Add new method `destroy` for remove all transit storage.
+- Change transit storage structure.
 
 
 ### 0.2.1

@@ -14,7 +14,7 @@ var global = this;
 var transit = (function() {
 
   var transit_storage = {},
-      export_action_name = ['normal', 'update', 'load'];
+      transit_storage_name = [];
 
 
   /**
@@ -48,6 +48,31 @@ var transit = (function() {
     else {
       return false;
     }
+  }
+
+
+  /**
+   * Deep extend object.
+   * http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
+   * ------------------------------------------------------------
+   * @name extend
+   * @param {Object} destination object.
+   * @param {Object} object for extend to destination.
+   * @return {Object} reference to destination.
+   */
+
+  function extend(dst, source) {
+    for (var prop in source) {
+      if (source[prop] &&
+          source[prop].constructor &&
+          source[prop].constructor === Object) {
+        dst[prop] = dst[prop] || {};
+        extend(dst[prop], source[prop]);
+      } else {
+        dst[prop] = source[prop];
+      }
+    }
+    return dst;
   }
   
 
@@ -102,6 +127,41 @@ var transit = (function() {
 
 
   /**
+   * Get deep object from array keys
+   * http://stackoverflow.com/questions/2631001/javascript-test-for-existence-of-nested-object-key
+   * ------------------------------------------------------------
+   * @name getDeepObject
+   * @param {Object} object for get data
+   * @param {Array} object level for get data
+   *                example: ['lib', 'util'] = obj.lib.util
+   * @return {Boolean} object key is exist or not
+   */
+
+  function getDeepObject(obj, keys) {
+    for (var i = 0, len = keys.length; i < len; i++) {
+      if ( typeof obj[keys[i] ] === 'undefined' ) {
+        return null;
+      }
+      obj = obj[keys[i]];
+    }
+    return obj;
+  }
+
+
+  /**
+   * Name format for exports or require
+   * ------------------------------------------------------------
+   * @name nameFormat
+   * @param {String} name for exports or require
+   * @return {Array} name array for create deep object or get deep object value
+   */
+
+  function nameFormat(name) {
+    return name.replace(/^\//, '').split('/');
+  }
+
+
+  /**
    * ------------------------------------------------------------
    * available method
    * ------------------------------------------------------------
@@ -112,14 +172,14 @@ var transit = (function() {
     /**
      * View exports name is available right now
      * ------------------------------------------------------------
-     * @name list
+     * @name transit.list
      * @return {Array} exports name is available list
      */
 
     list: function() {
       var exports_available = [];
-      for (var _name in transit_storage) {
-        exports_available.push(_name);
+      for (var i = 0, len = transit_storage_name.length; i < len; i++) {
+        exports_available.push(transit_storage_name[i]);
       }
       return exports_available;
     },
@@ -130,32 +190,36 @@ var transit = (function() {
      * ------------------------------------------------------------
      * @name transit.exports
      * @param {String} context name
-     * @param {Function} export function
-     * @param {String} action string for test export what to do
+     * @param {Any} export source
      */
 
-    exports: function(name, func, action) {
-      if (action == null) { action = 'normal'; }
-      if (export_action_name.indexOf(action) === -1) {
-        throw new Error('Export action name `' + action + '` doesn\'t exist. (' + export_action_name + ')'); 
+    exports: function(name, source) {
+      if (transit_storage_name.indexOf(name) !== -1) {
+        throw new Error('Export name `' + name + '` is already exist.');
       }
 
-      // check exports function exist or not
-      if (transit_storage[name]) {
-        if (action !== 'update' && action !== 'load') {
-          throw new Error('Export name `' + name + '` is already exist.'); 
+      // add name reference for check duplicate later
+      transit_storage_name.push(name);
+
+
+      var temp = {},
+          obj = temp,
+          value = {};
+
+      // split name with `/` for create deep object
+      name = nameFormat(name);
+
+      for (var i = 0, len = name.length; i < len; i++) {
+        if (i < len - 1) {
+          value = {};
         }
-
-        // update export source
-        if (action === 'update') {
-          transit_storage[name] = func;
+        else {
+          value = source;
         }
-
-      }
-      else {
-        transit_storage[name] = func;
+        temp = temp[ name[i] ] = value;
       }
 
+      extend(transit_storage, obj);
     },
 
 
@@ -168,10 +232,10 @@ var transit = (function() {
      */
 
     require: function(name) {
-      if (!transit_storage[name]) {
+      if ( transit_storage_name.indexOf(name) === -1 ) {
         console.warn('Exports name `' + name + '` doesn\'t exist.');
       }
-      return transit_storage[name];
+      return getDeepObject( transit_storage, nameFormat(name) );
     },
 
 
@@ -210,12 +274,13 @@ var transit = (function() {
 
     /**
      * Load another script to execute in current file
-     * See: http://stackoverflow.com/questions/950087/include-a-javascript-file-in-another-javascript-file
+     * http://stackoverflow.com/questions/950087/include-a-javascript-file-in-another-javascript-file
      * ------------------------------------------------------------
      * @name transit.load
      * @param {String} url script for load
      * @param {Function} callback function fire after script load finish
-     * @param {String} context for append script [head|current|bottom] (default is current script file)
+     * @param {String} context for append script
+     *                 [head|current|bottom] (default is current script file)
      */
     
     load: function(url, callback, context) {
@@ -247,8 +312,20 @@ var transit = (function() {
 
       // clean up load script
       // script.parentNode.removeChild(script);
-    }
+    },
 
+
+    /**
+     * Destroy transit storage
+     * ------------------------------------------------------------
+     * @name transit.destroy
+     */
+
+    destroy: function() {
+      // reset all storage and name
+      transit_storage = {};
+      transit_storage_name = [];
+    }
 
   };
 
