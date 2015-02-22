@@ -28,4 +28,6 @@ A.add = function(a, b) {
 }
 
 
+transit.exports('B', B);
+
 }).call(this);
